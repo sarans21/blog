@@ -1,0 +1,34 @@
+%html
+  %head
+    %title= title
+    %link{:rel => "stylesheet", :href => "/stylesheets/sanitize.css"}
+    %link{:rel => "stylesheet", :href => "/stylesheets/syntax.css"}
+    %link{:rel => "stylesheet", :href => "/stylesheets/blog.css"}
+  %body
+    .container
+      %header.header
+        %p.logo
+          <img src="/assets/logo.png" alt="logo">
+        %h1 Sarans' Blog
+      %nav.nav
+        %ul
+          %li
+            %h2 Articles
+            %ul.sub-nav
+              - articles.each do |a|
+                %li
+                  %a.item{:href => a[:link]}= a[:title]
+        %ul.main-pages-nav
+          %li
+            %a{:href => link.call("")}
+              %h2 About Me
+
+      %article.content
+        %h1= title
+        %p.date= date
+        %div= content
+      %footer.footer
+        %p
+          Powered by
+          %a{:href => "https://github.com/sarans21/blogger"} blogger
+        %p &copy; 2022 Saran Siriphantnon
