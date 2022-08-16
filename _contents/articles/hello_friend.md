@@ -10,7 +10,7 @@ Welcome to my shiny new blog!
 
 ## How I Create This Blog?
 
-This blog is built using my own static blog engine, called [blogger](), written from scratch in Ruby.
+This blog is built using my own static blog engine, called [blogger](https://github.com/sarans21/blogger), written from scratch in Ruby.
 
 In development, it is like this:
 
