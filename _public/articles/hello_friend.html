@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>Hello, Friend</title>
+<link href='/stylesheets/sanitize.css' rel='stylesheet'>
+<link href='/stylesheets/syntax.css' rel='stylesheet'>
+<link href='/stylesheets/blog.css' rel='stylesheet'>
+</head>
+<body>
+<div class='container'>
+<header class='header'>
+<p class='logo'>
+<img src="/assets/logo.png" alt="logo">
+</p>
+<h1>Sarans' Blog</h1>
+</header>
+<nav class='nav'>
+<ul>
+<li>
+<h2>Articles</h2>
+<ul class='sub-nav'>
+<li>
+<a class='item' href='https://sarans.co/articles/hello_friend.html'>Hello, Friend</a>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='main-pages-nav'>
+<li>
+<a href='https://sarans.co/'>
+<h2>About Me</h2>
+</a>
+</li>
+</ul>
+</nav>
+<article class='content'>
+<h1>Hello, Friend</h1>
+<p class='date'>16 Aug, 2022</p>
+<div><blockquote>
+<p><em>&quot;Hello, friend. Hello, friend? That&#39;s lame.&quot;</em>  </p>
+
+<p>&mdash; Elliot Alderson, Mr. Robot</p>
+</blockquote>
+
+<p>Welcome to my shiny new blog!</p>
+
+<h2>How I Create This Blog?</h2>
+
+<p>This blog is built using my own static blog engine, called <a href="">blogger</a>, written from scratch in Ruby.</p>
+
+<p>In development, it is like this:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>blogger init blog
+</code></pre></div>
+<p>This creates a new directory named <code>blog</code> with this structure:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>blog/
+  _layouts/
+    stylesheets/
+      blog.css
+      sanitize.css
+      syntax.css
+    index.haml
+  _assets/
+    logo.png
+  _contents/
+    articles/
+      hello.md
+</code></pre></div>
+<p>Then,</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>blogger serve <span class="nb">.</span>
+</code></pre></div>
+<p>The engine will listen on <code>http://localhost:8080</code> with <code>LiveReload</code> enabled. Edited Markdown contents in <code>_contents</code> get automatically re-rendered with layouts and reloaded in the browser.</p>
+
+<h3>Deployment</h3>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>blogger build <span class="nt">--scheme</span> https <span class="nt">--host</span> sarans.co <span class="nt">--port</span> 443 <span class="nb">.</span>
+</code></pre></div>
+<p>This creates a static site in <code>_public</code> directory, ready to be deployed anywhere.</p>
+
+<h2>Blog Engine Implementation</h2>
+
+<p>Layouts (<a href="https://haml.info/">Haml</a>) and contents (<a href="https://daringfireball.net/projects/markdown/">Markdown</a>) rendering uses <a href="https://github.com/rtomayko/tilt">tilt</a> and <a href="https://github.com/vmg/redcarpet">redcarpet</a> gem respectively. Watching for changes (in <code>serve</code> command) for re-rendering is implemented by using the <a href="https://github.com/guard/listen">listen</a> gem for listening to file system notifications.</p>
+
+<p>The CSS is hand-written without a framework in <code>_layouts/stylesheets/blog.css</code> using pure CSS code because I&#39;m too lazy to make live SASS compiling and reloading work. The theme is based on my own unpublished Sublime theme, which in turn was based on <a href="https://github.com/dempfi/ayu">ayu</a>.</p>
+
+<p>Code highlighter uses <a href="https://github.com/rouge-ruby/rouge">rouge</a>, which is compatible with Pygments.</p>
+
+<p>Browser live reloading uses <a href="https://github.com/livereload/livereload-js">LiveReload-JS</a> in client-side. Server-side is written based on <a href="https://github.com/igrigorik/em-websocket">EventMachine WebSocket</a> following <a href="http://livereload.com/api/protocol/">LiveReload protocol version 7</a>, which I borrowed the code from Jekyll&#39;s <code>LiveReloadReactor</code>.</p>
+
+<p>The CLI is built using <a href="http://whatisthor.com/">Thor</a>.</p>
+
+<p>Front Matter parsing is hand-written using standard Ruby&#39;s <code>String#split</code> and <a href="https://github.com/ruby/yaml">yaml</a> module.</p>
+
+<p>The whole engine is <a href="https://github.com/sarans21/blogger">&lt;300 LOC</a> in Ruby.</p>
+
+<h2>What&#39;s Next?</h2>
+
+<p>There are so many more things to do with Blog (SEO, custom pages, analytics, and comments to name a few). I will only add things as I needed.</p>
+
+<p>Until next time!</p>
+</div>
+</article>
+<footer class='footer'>
+<p>
+Powered by
+<a href='https://github.com/sarans21/blogger'>blogger</a>
+</p>
+<p>&copy; 2022 Saran Siriphantnon</p>
+</footer>
+</div>
+</body>
+</html>

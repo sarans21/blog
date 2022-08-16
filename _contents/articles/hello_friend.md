@@ -1,6 +1,6 @@
 ---
 title: Hello, Friend
-date: '2022-08-14'
+date: '2022-08-16'
 ---
 > *"Hello, friend. Hello, friend? That's lame."*  
 >   
