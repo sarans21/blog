@@ -167,18 +167,18 @@ pre.highlight {
 }
 
 p code {
-  background-color: #C8C8C8;
+  background-color: #778899;
   border:        1px solid #909090;
   border-radius: 3px;
-  padding:       1px;
+  padding:       1px 3px;
   color:         #F8F8F8;
 }
 
 li code {
-  background-color: #C8C8C8;
+  background-color: #778899;
   border:        1px solid #909090;
   border-radius: 3px;
-  padding:       1px;
+  padding:       1px 3px;
   color:         #F8F8F8;
 }
 

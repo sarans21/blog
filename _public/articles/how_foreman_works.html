@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>How Foreman Works?</title>
+<link href='/stylesheets/sanitize.css' rel='stylesheet'>
+<link href='/stylesheets/syntax.css' rel='stylesheet'>
+<link href='/stylesheets/blog.css' rel='stylesheet'>
+</head>
+<body>
+<div class='container'>
+<header class='header'>
+<p class='logo'>
+<img src="/assets/logo.png" alt="logo">
+</p>
+<h1>Sarans' Blog</h1>
+</header>
+<nav class='nav'>
+<ul>
+<li>
+<h2>Articles</h2>
+<ul class='sub-nav'>
+<li>
+<a class='item' href='http://localhost:8080/articles/hello_friend.html'>Hello, Friend</a>
+</li>
+<li>
+<a class='item' href='http://localhost:8080/articles/how_foreman_works.html'>How Foreman Works?</a>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='main-pages-nav'>
+<li>
+<a href='http://localhost:8080/'>
+<h2>About Me</h2>
+</a>
+</li>
+</ul>
+</nav>
+<article class='content'>
+<h1>How Foreman Works?</h1>
+<p class='date'>27 Aug, 2022</p>
+<div><p><a href="https://github.com/ddollar/foreman">Foreman</a>, introduced in <a href="http://blog.daviddollar.org/2011/05/06/introducing-foreman.html">2011</a> is a simple <a href="https://devcenter.heroku.com/articles/procfile">Procfile</a>-based process manager written in Ruby.</p>
+
+<p>With a Procfile like this:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># Profile</span>
+web_a: bundle <span class="nb">exec </span>ruby app_a.rb
+web_b: bundle <span class="nb">exec </span>ruby app_b.rb
+service_a: go run service_a.go
+</code></pre></div>
+<p>And a single command: <code>foreman start</code>, you can run multiple background processes (3 in this case) with a foreground monitoring process (the one attached to the terminal) that multiplexes the outputs of those processes (with color-coded) into the <code>STDOUT</code> and monitoring for signals:</p>
+
+<p><img src="/assets/articles/how_foreman_works/start.png" alt="Foreman Start"></p>
+
+<p>And when we finished, we can send <code>SIGINT</code>, <code>SIGTERM</code>, or <code>SIGHUP</code> to the foreground process, and it will send <code>SIGTERM</code> to terminate all processes gracefully (provided that those processes also trap <code>SIGTERM</code> and terminate themselves gracefully):</p>
+
+<p><img src="/assets/articles/how_foreman_works/terminate.png" alt="Foreman Terminate"></p>
+
+<p>Wonderful.</p>
+
+<p>Alas, there is little documentation of how it actually works. Are you curious of how a simple program with core logic with <a href="https://github.com/ddollar/foreman/blob/master/lib/foreman/engine.rb">&lt;300 LOC</a> is capable of handling multiple background processes for you?</p>
+
+<p>So, here we go.</p>
+
+<blockquote>
+<p><strong>A SIDE NOTE</strong></p>
+
+<p>Nowadays, new folks don&#39;t hear much about Process Management, mainly because I think containers are already a norm. Nevertheless, I still think this is a fun exploration.  </p>
+</blockquote>
+
+<p>-</p>
+
+<blockquote>
+<p><strong>TL;DR</strong></p>
+
+<p>If you are not insterested on how the code works internally, just skip to the end where I present a diagram.</p>
+</blockquote>
+
+<h2>The Core Logic</h2>
+
+<p>After running <code>foreman start</code>, Foreman will attempt to read <code>Procfile</code> and an optional <code>.env</code> file (for setting environment variables in all processes), parse processes in Procfile, assign them into <code>@processes</code> variable, and then start the core logic.</p>
+
+<p>The core logic is simple, because Foreman is written <a href="https://www.amazon.com/Eloquent-Ruby-Addison-Wesley-Professional/dp/0321584104">eloquently</a>, we can easily follow its main logic in <code>engine.rb</code>:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Start the processes registered to this +Engine+</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">start</span>
+  <span class="n">register_signal_handlers</span>
+  <span class="n">startup</span>
+  <span class="n">spawn_processes</span>
+  <span class="n">watch_for_output</span>
+  <span class="nb">sleep</span> <span class="mf">0.1</span>
+  <span class="n">wait_for_shutdown_or_child_termination</span>
+  <span class="n">shutdown</span>
+  <span class="nb">exit</span><span class="p">(</span><span class="vi">@exitstatus</span><span class="p">)</span> <span class="k">if</span> <span class="vi">@exitstatus</span>
+<span class="k">end</span>
+</code></pre></div>
+<ul>
+<li><code>register_signal_handlers</code> traps signals: <code>TERM, INT, HUP</code> for later all processes termination and traps <code>USR1, USR2</code> for forwarding controlling signals to all background processes. All other signals are discarded.</li>
+<li><code>startup</code> assigns names and colors for outputs of the background processes</li>
+<li><code>spawn_processes</code> spawns the processes, for how it does we can just look at the code:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">def</span> <span class="nf">spawn_processes</span>
+  <span class="vi">@processes</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">process</span><span class="o">|</span>
+    <span class="mi">1</span><span class="p">.</span><span class="nf">upto</span><span class="p">(</span><span class="n">formation</span><span class="p">[</span><span class="vi">@names</span><span class="p">[</span><span class="n">process</span><span class="p">]])</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
+      <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span> <span class="o">=</span> <span class="no">IO</span><span class="p">.</span><span class="nf">pipe</span>
+      <span class="k">begin</span>
+        <span class="n">pid</span> <span class="o">=</span> <span class="n">process</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="ss">:output</span> <span class="o">=&gt;</span> <span class="n">writer</span><span class="p">,</span> <span class="ss">:env</span> <span class="o">=&gt;</span> <span class="p">{</span>
+          <span class="s2">"PORT"</span> <span class="o">=&gt;</span> <span class="n">port_for</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">n</span><span class="p">).</span><span class="nf">to_s</span><span class="p">,</span>
+          <span class="s2">"PS"</span> <span class="o">=&gt;</span> <span class="n">name_for_index</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="n">writer</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"started with pid </span><span class="si">#{</span><span class="n">pid</span><span class="si">}</span><span class="s2">"</span>
+      <span class="k">rescue</span> <span class="no">Errno</span><span class="o">::</span><span class="no">ENOENT</span>
+        <span class="n">writer</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"unknown command: </span><span class="si">#{</span><span class="n">process</span><span class="p">.</span><span class="nf">command</span><span class="si">}</span><span class="s2">"</span>
+      <span class="k">end</span>
+      <span class="vi">@running</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">process</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
+      <span class="vi">@readers</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>(For <code>formation</code>, it is just a way to tell how many instances for each defined process type to run).</p>
+
+<p>Basically it uses <code>Foreman::Process#run()</code>, which in turns use the standard lib&#39;s <a href="https://ruby-doc.org/core-3.0.2/Process.html#method-c-spawn">::Process::spawn</a>, which in its most basic usage, given the environment variables and a command, it will start a background child process that has its output reassigned to the <code>writer</code> end of a <a href="https://ruby-doc.org/core-3.1.2/IO.html#method-c-pipe">pipe</a> which connects to its <code>reader</code> end, its process group set to the main Foreman foreground process (which is also its parent process), and run that given command under specified environment variables.</p>
+
+<p>Any output that the spawned background child process normally outputs to the <code>STDOUT</code> will go to its <code>writer</code> instead. And can be read by reading through the <code>reader</code> pipe.</p>
+
+<p>Continue to the rest of the core logic:</p>
+
+<ul>
+<li><code>watch_for_outputs</code> Foreman will start a thread that continuously reads <code>@readers</code> pipes for outputs and a self-pipe for signals received on the main thread (more on this later). If any of <code>@readers</code> or the self-pipe has a value, it will output that value into <code>STDOUT</code> with its assigned process name, color, and also will timestamp the output, or will handle signals, respectively.</li>
+<li><code>wait_for_shutdown_or_child_termination</code>, here is where its child processes monitoring loop happens:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">def</span> <span class="nf">wait_for_shutdown_or_child_termination</span>
+  <span class="kp">loop</span> <span class="k">do</span>
+    <span class="c1"># Stop if it is time to shut down (asked via a signal)</span>
+    <span class="k">break</span> <span class="k">if</span> <span class="vi">@shutdown</span>
+
+    <span class="c1"># Stop if any of the children died</span>
+    <span class="k">break</span> <span class="k">if</span> <span class="n">check_for_termination</span>
+
+    <span class="c1"># Sleep for a moment and do not blow up if any signals are coming our way</span>
+    <span class="k">begin</span>
+      <span class="nb">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">rescue</span> <span class="no">Exception</span>
+      <span class="c1"># noop</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Ok, we have exited from the main loop, time to shut down gracefully</span>
+  <span class="n">terminate_gracefully</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Any of <code>INT</code>, <code>TERM</code>, <code>HUP</code> signals received, will make <code>@shutdown = true</code> and thus will break the loop. Or if any child process has terminated (checked via <code>check_for_termination</code> -- which calls <a href="https://ruby-doc.org/core-3.0.2/Process.html#method-c-wait2">::Process::wait2</a>), it will also break the loop.</p>
+
+<p>Breaking the loop will make the main thread calls <code>terminate_gracefully</code>, which sends <code>TERM</code> signal to all child processes. Then if all the background child processes haven&#39;t terminated yet and a timeout (default is 5 seconds) happened, it will just send <code>KILL</code> signal to kill all children immediately.</p>
+
+<p>Then Foreman will shutdown.</p>
+
+<ul>
+<li><code>shutdown</code> currently does nothing.</li>
+<li><code>exit</code> exits with exit status, possibly set to those of its children. The end.</li>
+</ul>
+
+<h2>Signal handling and the Self-Pipe Tricks</h2>
+
+<p>Handling signals is a pain (both in UNIX and Windows). Any signal can be trapped and handled with our own custom logic, but while that signal is being handled, a new signal can be sent and the signal handling will be interrupted, possibly again and again.</p>
+
+<p>The <a href="https://cr.yp.to/docs/selfpipe.html">UNIX self-pipe trick</a> is a hack that can be roughly explained like so:</p>
+
+<ul>
+<li>The main thread creates a <a href="https://man7.org/linux/man-pages/man2/pipe.2.html">pipe</a>, a unidirectional data channel that usually is created for interprocess communication, but in this case will be used for its own internal process communication, thus called a <strong>self-pipe</strong>, which has <code>reader</code> and <code>writer</code> ends</li>
+<li>The main thread spawns a monitoring thread that monitors the <code>reader</code> end of the self-pipe</li>
+<li>The main thread creates a <strong>single signal queue</strong>. All interested signals will be trapped and put into this single queue, and notify the monitoring thread by writing a byte to the <code>writer</code> end of the self-pipe</li>
+<li>The monitoring thread will get notified via the <code>reader</code> end (perhaps with <a href="https://man7.org/linux/man-pages/man2/select.2.html">select(2)</a>), and will process signals in the queue with the custom logic, then returns to its normal job, notify main thread to do something (maybe by setting a specific variable), or shutdown</li>
+</ul>
+
+<p>If this still sounds confused, perhaps <a href="https://www.sitepoint.com/the-self-pipe-trick-explained/">this article</a> may elaborate better.</p>
+
+<h2>Diagram of How Foreman Works</h2>
+
+<p>Here we conclude how Foreman works with a diagram.</p>
+
+<p><img src="/assets/articles/how_foreman_works/foreman.png" alt="Foreman Diagram"></p>
+
+<p>If you find any mistakes, feel free to notify <a href="https://sarans.co">me</a>.</p>
+
+<p>Till next time!</p>
+</div>
+</article>
+<footer class='footer'>
+<p>
+Powered by
+<a href='https://github.com/sarans21/blogger'>blogger</a>
+</p>
+<p>&copy; 2022 Saran Siriphantnon</p>
+</footer>
+</div>
+</body>
+</html>
