@@ -7,7 +7,7 @@ date: '2022-08-27'
 With a Procfile like this:
 
 ```sh
-# Profile
+# Procfile
 web_a: bundle exec ruby app_a.rb
 web_b: bundle exec ruby app_b.rb
 service_a: go run service_a.go
