@@ -125,7 +125,7 @@ Then Foreman will shutdown.
 * `shutdown` currently does nothing.
 * `exit` exits with exit status, possibly set to those of its children. The end.
 
-## Signal handling and the Self-Pipe Tricks
+## Signal handling and the Self-Pipe Trick
 
 Handling signals is a pain (both in UNIX and Windows). Any signal can be trapped and handled with our own custom logic, but while that signal is being handled, a new signal can be sent and the signal handling will be interrupted, possibly again and again.
 
