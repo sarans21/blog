@@ -15,7 +15,7 @@ html {
 
 @media screen and (min-width: 1600px) {
   html {
-    font-size: 22px;
+    font-size: 16px;
   }
 
   .container {
@@ -42,7 +42,7 @@ html {
 /* Mobile */
 @media screen and (max-width: 1080px) {
   html {
-    font-size: 30px;
+    font-size: 16px;
   }
 
   .container {
@@ -59,11 +59,16 @@ html {
     text-align: center;
     padding-top: 50px !important;
     border-top: 3px solid #F07171;
-    font-size: 0.6rem !important;
+    font-size: 1rem !important;
   }
 
   .nav .main-pages-nav h2 {
-    font-size: 0.8rem !important;
+    font-size: 1rem !important;
+  }
+
+  .nav > ul {
+    max-width: 400px;
+    margin: 0 auto !important;
   }
 
   .content {
@@ -142,6 +147,18 @@ a {
 
 .nav ul.sub-nav {
   margin: 10px 0 80px 0;
+}
+
+.nav ul.sub-nav .sub-nav-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav ul.sub-nav .sub-nav-item .item-date {
+  color:     #9ba3ab;
+  font-size: 0.7rem;
+  font-style: italic;
+  align-content: center;
 }
 
 .nav a.item {
