@@ -60,6 +60,7 @@ html {
     padding-top: 50px !important;
     border-top: 3px solid #F07171;
     font-size: 1rem !important;
+    border-right: 0 !important;
   }
 
   .nav .main-pages-nav h2 {
@@ -72,16 +73,27 @@ html {
   }
 
   .content {
-    width: calc(100vw - 100px);
+    max-width: 100%;
+    padding: 0 !important;
+  }
+
+  .header {
+    padding: 0 !important;
+  }
+
+  .header .logo {
+    display: flex;
+    align-items: center;
+    width: 100px !important;
   }
 
   .header .logo img {
-    width: 150px !important;
+    width: 100px !important;
   }
 
   .header h1 {
     font-size:   2.5rem !important;
-    line-height: 250px !important;
+    line-height: 150px !important;
   }
 
   .content img {
