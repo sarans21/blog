@@ -8,8 +8,8 @@
 
     %meta{:property => "og:type", :content => "article"}
     %meta{:property => "og:site_name", :content =>"Sarans' Blog"}
-    %meta{:property => "og:title", :content => "#{title}>"}
-    %meta{:property => "og:description", :content => "#{description}>"}
+    %meta{:property => "og:title", :content => "#{title}"}
+    %meta{:property => "og:description", :content => "#{description}"}
     %meta{:property => "og:url", :content => "#{link.call(dst_file)}"}
     - if og_image
       %meta{:property => "og:image", :content => "#{link.call(og_image || "")}"}
