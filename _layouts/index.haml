@@ -5,6 +5,14 @@
     %link{:rel => "stylesheet", :href => "/stylesheets/syntax.css"}
     %link{:rel => "stylesheet", :href => "/stylesheets/blog.css"}
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}
+
+    %meta{:property => "og:type", :content => "article"}
+    %meta{:property => "og:site_name", :content =>"Sarans' Blog"}
+    %meta{:property => "og:title", :content => "#{title}>"}
+    %meta{:property => "og:description", :content => "#{description}>"}
+    %meta{:property => "og:url", :content => "#{link.call(dst_file)}"}
+    - if og_image
+      %meta{:property => "og:image", :content => "#{link.call(og_image || "")}"} if og_image
   %body
     .container
       %header.header
@@ -29,7 +37,7 @@
       %article.content
         %h1= title
         %p.date= date
-        %div= content
+        %div!= content
       %footer.footer
         %p
           Powered by

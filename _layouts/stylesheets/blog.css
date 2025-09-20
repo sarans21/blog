@@ -13,6 +13,30 @@ html {
   margin:  0 auto;
 }
 
+/* Defaults */
+.content img {
+  max-width: 800px;
+  max-height: 600px;
+}
+
+figure {
+  margin: 1.5em auto;
+  text-align: center;
+}
+
+figure img {
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+figcaption {
+  margin-top: 0.8em;
+  font-size: 0.9em;
+  font-style: italic;
+  color: #666;
+  line-height: 1.4;
+}
+
 @media screen and (min-width: 1600px) {
   html {
     font-size: 16px;
@@ -98,7 +122,9 @@ html {
   }
 
   .content img {
-    width: 100%;
+    /* width: 100%; */
+    max-width: 300px;
+    max-height: 280px;
   }
 
   .content .date {
