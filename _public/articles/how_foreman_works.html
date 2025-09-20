@@ -5,6 +5,11 @@
 <link href='/stylesheets/syntax.css' rel='stylesheet'>
 <link href='/stylesheets/blog.css' rel='stylesheet'>
 <meta content='width=device-width, initial-scale=1' name='viewport'>
+<meta content='article' property='og:type'>
+<meta content='Sarans&#39; Blog' property='og:site_name'>
+<meta content='How Foreman Works?&gt;' property='og:title'>
+<meta content='&gt;' property='og:description'>
+<meta content='https://sarans.so/articles/how_foreman_works.html' property='og:url'>
 </head>
 <body>
 <div class='container'>
@@ -19,6 +24,12 @@
 <li>
 <h2>Articles</h2>
 <ul class='sub-nav'>
+<li>
+<div class='sub-nav-item'>
+<a class='item' href='https://sarans.so/articles/my_best_photos_so_far.html'>My Best Photos So Far</a>
+<span class='item-date'>2025/09/20</span>
+</div>
+</li>
 <li>
 <div class='sub-nav-item'>
 <a class='item' href='https://sarans.so/articles/how_foreman_works.html'>How Foreman Works?</a>
@@ -55,11 +66,11 @@ service_a: go run service_a.go
 </code></pre></div>
 <p>And a single command: <code>foreman start</code>, you can run multiple background processes (3 in this case) with a foreground monitoring process (the one attached to the terminal) that multiplexes the outputs of those processes (with color-coded) into the <code>STDOUT</code> and monitoring for signals:</p>
 
-<p><img src="/assets/articles/how_foreman_works/start.png" alt="Foreman Start"></p>
+<p><figure><img src="/assets/articles/how_foreman_works/start.png" alt="Foreman Start"><figcaption>Foreman Start</figcaption></figure></p>
 
 <p>And when we finished, we can send <code>SIGINT</code>, <code>SIGTERM</code>, or <code>SIGHUP</code> to the foreground process, and it will send <code>SIGTERM</code> to terminate all processes gracefully (provided that those processes also trap <code>SIGTERM</code> and terminate themselves gracefully):</p>
 
-<p><img src="/assets/articles/how_foreman_works/terminate.png" alt="Foreman Terminate"></p>
+<p><figure><img src="/assets/articles/how_foreman_works/terminate.png" alt="Foreman Terminate"><figcaption>Foreman Terminate</figcaption></figure></p>
 
 <p>Wonderful.</p>
 
@@ -185,7 +196,7 @@ service_a: go run service_a.go
 
 <p>Here we conclude how Foreman works with a diagram.</p>
 
-<p><img src="/assets/articles/how_foreman_works/foreman.png" alt="Foreman Diagram"></p>
+<p><figure><img src="/assets/articles/how_foreman_works/foreman.png" alt="Foreman Diagram"><figcaption>Foreman Diagram</figcaption></figure></p>
 
 <p>If you find any mistakes, feel free to notify <a href="https://sarans.co">me</a>.</p>
 
