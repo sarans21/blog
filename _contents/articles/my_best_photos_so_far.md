@@ -2,7 +2,7 @@
 title: My Best Photos So Far
 description: "I started photography in April 2025. Here my best works so far."
 date: '2025-09-20'
-og_image: "assets/articles/my_best_photos_so_far/The+Mountain.JPG"
+og_image: "assets/articles/my_best_photos_so_far/The_Mountain.jpg"
 ---
 
 I started photography in April 2025. Here my best works so far:
