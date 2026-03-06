@@ -26,13 +26,14 @@
         %h1 Sarans' Blog
       %nav.nav
         %ul
-          %li
-            %h2 Articles
-            %ul.sub-nav
-              - articles.each do |a|
-                %li
-                  .sub-nav-item
+          - articles.each do |ar, pages|
+            %li
+              %h2= ar.gsub('_', ' ').titleize
+              %ul.sub-nav
+                - pages.each do |a|
+                  %li.sub-nav-item
                     %a.item{:href => a[:link]}= a[:title]
+                    %div{:style => "flex: 1"}
                     %span.item-date= a[:date]
         %ul.main-pages-nav
           %li

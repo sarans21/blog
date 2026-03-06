@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
 html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -26,10 +30,31 @@ code {
   font-family: "JetBrains Mono", system-ui;
   font-optical-sizing: auto;
   font-style: normal;
+  font-size: 0.9em;
 }
 
-/* Layouts */
-/* Scale text depending on screen size */
+pre code {
+    font-size: 0.8em;
+}
+
+/* ==========================================================================
+   Base / Reset
+   ========================================================================== */
+
+html h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color:  #F07171;
+}
+
+a {
+  color: #FFAA33;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
 .container {
   display: grid;
 
@@ -37,11 +62,121 @@ code {
   margin:  0 auto;
 }
 
-/* Defaults */
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.header {
+  display:    flex;
+  grid-area:  header;
+
+  padding-top:    30px;
+  padding-bottom: 0px;
+  margin-bottom:  40px;
+
+  border-bottom:  3px solid #F07171;
+}
+
+.header h1 {
+  font-size:   5rem;
+  line-height: 300px;
+}
+
+.header .logo {
+  width: 300px;
+}
+
+.header .logo img {
+  display: block;
+  width:   230px;
+
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Navigation (Sidebar)
+   ========================================================================== */
+
+.nav {
+  grid-area: sidebar;
+
+  padding:      20px;
+  min-width:    330px;
+  border-right: 2px solid #e6e6e6;
+}
+
+.nav ul {
+  margin: 0;
+}
+
+.nav ul ul.sub-nav {
+  margin: 10px 0 60px 0;
+}
+
+.nav ul ul.sub-nav .sub-nav-item {
+  display: flex;
+}
+
+.nav ul ul.sub-nav .sub-nav-item .item-date {
+  color:     #9ba3ab;
+  font-size: 0.7rem;
+  font-style: italic;
+  align-content: center;
+}
+
+.nav a.item {
+  color: black;
+  margin-left: 0px;
+}
+
+.nav a.item:hover {
+   text-decoration: underline;
+}
+
+.nav .main-pages-nav h2 {
+  font-size: 1rem;
+}
+
+.nav .main-pages-nav h2:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+
+.content {
+  position: relative;
+  grid-area: content;
+
+  padding: 10px 20px 0 50px;
+}
+
+.content h1:not(:first-child) {
+  margin-top: 30px;
+}
+
+.content h2 {
+  margin-top: 35px;
+  margin-bottom: 14px;
+}
+
+.content .date {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #808080;
+  padding-top: 3px;
+}
+
 .content img {
   max-width: 800px;
   max-height: 600px;
 }
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
 
 figure {
   margin: 1.5em auto;
@@ -61,6 +196,66 @@ figcaption {
   line-height: 1.4;
 }
 
+/* ==========================================================================
+   Code Blocks
+   ========================================================================== */
+
+pre.highlight {
+  padding: 10px;
+  border:  1px dashed black;
+  border-radius: 5px;
+}
+
+p code,
+li code {
+  background-color: #778899;
+  border:        1px solid #909090;
+  border-radius: 3px;
+  padding:       1px 3px;
+  color:         #F8F8F8;
+}
+
+/* ==========================================================================
+   Blockquotes
+   ========================================================================== */
+
+blockquote {
+  background-color: rgba(192,91,77,.05);
+  margin-inline-start: 0;
+  padding: 10px 30px;
+  border-left: 3px solid #F07171;
+}
+
+blockquote p {
+  margin: 10px 0;
+}
+
+blockquote p:not(:last-child) {
+  margin: 10px 0 30px 0;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.footer {
+  grid-area: footer;
+
+  padding: 20px;
+  margin-top:    40px;
+  margin-bottom: 20px;
+
+  border-top: 3px solid #F07171;
+}
+
+.footer p {
+  text-align: center;
+}
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
 @media screen and (min-width: 1600px) {
   html {
     font-size: 16px;
@@ -78,6 +273,10 @@ figcaption {
                            "footer  footer";
     grid-template-rows:    auto 1fr auto;
     grid-template-columns: auto 1fr;
+  }
+
+  code {
+    font-size: 0.9em;
   }
 }
 
@@ -146,7 +345,6 @@ figcaption {
   }
 
   .content img {
-    /* width: 100%; */
     max-width: 300px;
     max-height: 280px;
   }
@@ -156,163 +354,4 @@ figcaption {
     margin-top: -2px !important;
     font-size: 0.8rem;
   }
-}
-
-/* Reset header text styles */
-html h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  color:  #F07171;
-}
-
-a {
-  color: #FFAA33;
-  text-decoration: none;
-}
-
-.header {
-  display:    flex;
-  grid-area:  header;
-
-  padding-top:    30px;
-  padding-bottom: 0px;
-  margin-bottom:  40px;
-
-  border-bottom:  3px solid #F07171;
-}
-
-.header h1 {
-  font-size:   5rem;
-  line-height: 300px;
-}
-
-.header .logo {
-  width: 300px;
-}
-
-.header .logo img {
-  display: block;
-  width:   230px;
-
-  margin: 0 auto;
-}
-
-.nav {
-  grid-area: sidebar;
-
-  padding:      20px;
-  min-width:    330px;
-  border-right: 2px solid #e6e6e6;
-}
-
-.nav ul {
-  margin: 0;
-}
-
-.nav ul.sub-nav {
-  margin: 10px 0 80px 0;
-}
-
-.nav ul.sub-nav .sub-nav-item {
-  display: flex;
-  justify-content: space-between;
-}
-
-.nav ul.sub-nav .sub-nav-item .item-date {
-  color:     #9ba3ab;
-  font-size: 0.7rem;
-  font-style: italic;
-  align-content: center;
-}
-
-.nav a.item {
-  color: black;
-  margin-left: 0px;
-}
-
-.nav a.item:hover {
-   text-decoration: underline;
-}
-
-.nav .main-pages-nav h2 {
-  font-size: 1rem;
-}
-
-.nav .main-pages-nav h2:hover {
-  text-decoration: underline;
-}
-
-.content {
-  position: relative;
-  grid-area: content;
-
-  padding: 10px 20px 0 50px;
-}
-
-.content h1:not(:first-child) {
-  margin-top: 30px;
-}
-
-.content h2 {
-  margin-top: 35px;
-}
-
-.content .date {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: #808080;
-  padding-top: 3px;
-}
-
-.footer {
-  grid-area: footer;
-  
-  padding: 20px;
-  margin-top:    40px;
-  margin-bottom: 20px;
-
-  border-top: 3px solid #F07171;
-}
-
-.footer p {
-  text-align: center;
-}
-
-/* Code */
-pre.highlight {
-  padding: 10px;
-  border:  1px dashed black;
-  border-radius: 5px;
-}
-
-p code {
-  background-color: #778899;
-  border:        1px solid #909090;
-  border-radius: 3px;
-  padding:       1px 3px;
-  color:         #F8F8F8;
-}
-
-li code {
-  background-color: #778899;
-  border:        1px solid #909090;
-  border-radius: 3px;
-  padding:       1px 3px;
-  color:         #F8F8F8;
-}
-
-/* Quote */
-blockquote {
-  background-color: rgba(192,91,77,.05);
-  margin-inline-start: 0;
-  padding: 10px 30px;
-  border-left: 3px solid #F07171;
-}
-
-blockquote p {
-  margin: 10px 0;
-}
-
-blockquote p:not(:last-child) {
-  margin: 10px 0 30px 0;
 }
