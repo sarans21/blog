@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>A Little Bit of Erlang</title>
+<link href="/stylesheets/sanitize.css" rel="stylesheet">
+<link href="/stylesheets/syntax.css" rel="stylesheet">
+<link href="/stylesheets/blog.css" rel="stylesheet">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<meta content="article" property="og:type">
+<meta content="Sarans&#39; Blog" property="og:site_name">
+<meta content="A Little Bit of Erlang" property="og:title">
+<meta content="" property="og:description">
+<meta content="https://sarans.so/a_little_bit_of_series/a_little_bit_of_erlang.html" property="og:url">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Source+Sans+3:ital,wght@0,200..900;1,200..900&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<header class="header">
+<p class="logo">
+<img src="/assets/logo.png" alt="logo">
+</p>
+<h1>Sarans' Blog</h1>
+</header>
+<nav class="nav">
+<ul>
+<li>
+<h2>Articles</h2>
+<ul class="sub-nav">
+<li class="sub-nav-item">
+<a class="item" href="https://sarans.so/articles/my_best_photos_so_far.html">My Best Photos So Far</a>
+<div style="flex: 1"></div>
+<span class="item-date">2025/09/20</span>
+</li>
+<li class="sub-nav-item">
+<a class="item" href="https://sarans.so/articles/how_foreman_works.html">How Foreman Works?</a>
+<div style="flex: 1"></div>
+<span class="item-date">2022/08/27</span>
+</li>
+<li class="sub-nav-item">
+<a class="item" href="https://sarans.so/articles/hello_friend.html">Hello, Friend</a>
+<div style="flex: 1"></div>
+<span class="item-date">2022/08/16</span>
+</li>
+</ul>
+</li>
+<li>
+<h2>A Little Bit Of Series</h2>
+<ul class="sub-nav">
+<li class="sub-nav-item">
+<a class="item" href="https://sarans.so/a_little_bit_of_series/a_little_bit_of_erlang.html">A Little Bit of Erlang</a>
+<div style="flex: 1"></div>
+<span class="item-date">2025/11/01</span>
+</li>
+</ul>
+</li>
+<li>
+<h2></h2>
+<ul class="sub-nav">
+</ul>
+</li>
+</ul>
+<ul class="main-pages-nav">
+<li>
+<a href="https://sarans.so/">
+<h2>About Me</h2>
+</a>
+</li>
+</ul>
+</nav>
+<article class="content">
+<h1>A Little Bit of Erlang</h1>
+<p class="date">1 Nov, 2025</p>
+<div><p>Let&#39;s do hello world.</p>
+<div class="highlight"><pre class="highlight erlang"><code><span class="c">%% File: hello.erl
+%% Define hello module with a greet/0 function.
+</span>
+<span class="p">-</span><span class="ni">module</span><span class="p">(</span><span class="n">hello</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">greet</span><span class="o">/</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="nf">greet</span><span class="p">()</span> <span class="o">-&gt;</span>
+  <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"Hello, world!</span><span class="si">~n</span><span class="s">"</span><span class="p">).</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>erl
+1&gt; c<span class="o">(</span>hello<span class="o">)</span><span class="nb">.</span>                            <span class="c"># Compile the hello module.</span>
+2&gt; hello:greet<span class="o">()</span><span class="nb">.</span>                       <span class="c"># Call the greet function.</span>
+Hello, world!
+ok
+</code></pre></div>
+<h2>Communication between nodes</h2>
+
+<p>On Machine 1.</p>
+<div class="highlight"><pre class="highlight erlang"><code><span class="p">-</span><span class="ni">module</span><span class="p">(</span><span class="n">hello</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">start</span><span class="o">/</span><span class="mi">0</span><span class="p">]).</span>
+
+<span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nb">register</span><span class="p">(</span><span class="n">hello</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">loop_and_wait_for_message</span><span class="p">,</span> <span class="p">[])).</span>
+
+<span class="nf">loop_and_wait_for_message</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">receive</span>
+      <span class="n">hi</span> <span class="o">-&gt;</span>
+        <span class="nf">greet</span><span class="p">(),</span>
+        <span class="nf">loop_and_wait_for_message</span><span class="p">()</span>
+    <span class="k">end</span><span class="p">.</span>
+
+<span class="nf">greet</span><span class="p">()</span> <span class="o">-&gt;</span>
+  <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"Hello, world!</span><span class="si">~n</span><span class="s">"</span><span class="p">).</span>
+
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>erl <span class="nt">-name</span> node1@pc1 <span class="nt">-setcookie</span> thisisasecret
+1&gt; c<span class="o">(</span>hello<span class="o">)</span><span class="nb">.</span>
+2&gt; hello:start<span class="o">()</span><span class="nb">.</span>
+<span class="nb">true</span>
+</code></pre></div>
+<p>Start the node 2 (could be on the same or another PC) and send a <code>hi</code> message to the first.</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>erl <span class="nt">-name</span> node2@pc2 <span class="nt">-setcookie</span> thisisasecret    <span class="c"># Being on the same network with matching cookie make them able to communicate.</span>
+1&gt; <span class="o">{</span>hello, <span class="s1">'node1@pc1'</span><span class="o">}</span> <span class="o">!</span> hi.                     <span class="c"># Send to the hello process on the node1.</span>
+</code></pre></div>
+<p>Back on Machine 1, we see:</p>
+<div class="highlight"><pre class="highlight shell"><code>Hello, world!
+</code></pre></div>
+<h2>Replying back</h2>
+
+<p>Just add where you are along with the message in a tuple (<code>{..}</code>) so the receiving end know where to reply back:</p>
+<div class="highlight"><pre class="highlight erlang"><code><span class="p">-</span><span class="ni">module</span><span class="p">(</span><span class="n">hello</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">start</span><span class="o">/</span><span class="mi">0</span><span class="p">]).</span>
+
+<span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nb">register</span><span class="p">(</span><span class="n">hello</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">loop_and_wait_for_message</span><span class="p">,</span> <span class="p">[])).</span>
+
+<span class="nf">loop_and_wait_for_message</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">receive</span>
+      <span class="p">{</span><span class="n">hi</span><span class="p">,</span> <span class="nv">From</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="nf">greet</span><span class="p">(</span><span class="nv">From</span><span class="p">),</span>
+        <span class="nv">From</span> <span class="o">!</span> <span class="p">{</span><span class="n">reply</span><span class="p">,</span> <span class="nf">self</span><span class="p">()},</span>
+        <span class="nf">loop_and_wait_for_message</span><span class="p">()</span>
+
+      <span class="p">{</span><span class="n">reply</span><span class="p">,</span> <span class="nv">From</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="nf">greet</span><span class="p">(</span><span class="nv">From</span><span class="p">),</span>
+        <span class="nf">loop_and_wait_for_message</span><span class="p">()</span>
+    <span class="k">end</span><span class="p">.</span>
+
+<span class="nf">greet</span><span class="p">(</span><span class="nv">From</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"Hello from </span><span class="si">~p</span><span class="s">!</span><span class="si">~n</span><span class="s">"</span><span class="p">,</span> <span class="p">[</span><span class="nv">From</span><span class="p">]).</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="c"># Node 1</span>
+1&gt; hello:start<span class="o">()</span><span class="nb">.</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="c"># Node 2</span>
+1&gt; hello:start<span class="o">()</span><span class="nb">.</span>
+2&gt; <span class="o">{</span>hello, <span class="s1">'node1@bq'</span><span class="o">}</span> <span class="o">!</span> <span class="o">{</span>hi, whereis<span class="o">(</span>hello<span class="o">)}</span><span class="nb">.</span>
+</code></pre></div>
+<p>Then we see the messages:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># Node 1</span>
+Hello from &lt;10359.100.0&gt;!                 <span class="c"># 10359.100.0 is the process from node B</span>
+
+<span class="c"># Node 2</span>
+Hello from &lt;10358.100.0&gt;!                 <span class="c"># 10358.100.0 is the process from node A</span>
+</code></pre></div>
+<h2>In the wild</h2>
+
+<p>What have just been shown is <strong>Distributed Erlang</strong>. Your Erlang processes can communicate from this built-in protocol or via a custom raw TCP, HTTP, through a message broker, and a lot more. You can spawn millions of processes in a single or multiple machines and have they discover each other and work together.</p>
+
+<p>Build on top of Distributed Erlang and its inherent capability of message passing, we can achieve all kind of process and node communications and supervisions with auto scaling and self-healing mechanisms (maybe via the famous <a href="https://en.wikipedia.org/wiki/Open_Telecom_Platform">OTP</a> framework) with no need of an orchestrator like Kubernetes or Swarm.</p>
+
+<h2>Additional resources</h2>
+
+<ol>
+<li><a href="https://learnyousomeerlang.com/">Learn You Some Erlang for Great Good!</a></li>
+<li><a href="https://www.erlang-in-anger.com/">Stuff Goes Bad: Erlang in Anger</a></li>
+<li><a href="https://ferd.ca/">Frank Hebert&#39;s Blog</a></li>
+</ol>
+</div>
+</article>
+<footer class="footer">
+<p>
+Powered by
+<a href="https://github.com/sarans21/blogger">blogger</a>
+</p>
+<p>&copy; 2022 Saran Siriphantnon</p>
+</footer>
+</div>
+</body>
+</html>
