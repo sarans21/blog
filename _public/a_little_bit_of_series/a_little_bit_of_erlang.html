@@ -144,14 +144,14 @@ ok
 1&gt; hello:start<span class="o">()</span><span class="nb">.</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="c"># Node 2</span>
 1&gt; hello:start<span class="o">()</span><span class="nb">.</span>
-2&gt; <span class="o">{</span>hello, <span class="s1">'node1@bq'</span><span class="o">}</span> <span class="o">!</span> <span class="o">{</span>hi, whereis<span class="o">(</span>hello<span class="o">)}</span><span class="nb">.</span>
+2&gt; <span class="o">{</span>hello, <span class="s1">'node1@pc1'</span><span class="o">}</span> <span class="o">!</span> <span class="o">{</span>hi, whereis<span class="o">(</span>hello<span class="o">)}</span><span class="nb">.</span>
 </code></pre></div>
 <p>Then we see the messages:</p>
 <div class="highlight"><pre class="highlight shell"><code><span class="c"># Node 1</span>
-Hello from &lt;10359.100.0&gt;!                 <span class="c"># 10359.100.0 is the process from node B</span>
+Hello from &lt;10359.100.0&gt;!                 <span class="c"># 10359.100.0 is the process from node 2</span>
 
 <span class="c"># Node 2</span>
-Hello from &lt;10358.100.0&gt;!                 <span class="c"># 10358.100.0 is the process from node A</span>
+Hello from &lt;10358.100.0&gt;!                 <span class="c"># 10358.100.0 is the process from node 1</span>
 </code></pre></div>
 <h2>In the wild</h2>
 

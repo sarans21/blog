@@ -104,17 +104,17 @@ greet(From) ->
 ```sh
 # Node 2
 1> hello:start().
-2> {hello, 'node1@bq'} ! {hi, whereis(hello)}.
+2> {hello, 'node1@pc1'} ! {hi, whereis(hello)}.
 ```
 
 Then we see the messages:
 
 ```sh
 # Node 1
-Hello from <10359.100.0>!                 # 10359.100.0 is the process from node B
+Hello from <10359.100.0>!                 # 10359.100.0 is the process from node 2
 
 # Node 2
-Hello from <10358.100.0>!                 # 10358.100.0 is the process from node A
+Hello from <10358.100.0>!                 # 10358.100.0 is the process from node 1
 ```
 
 ## In the wild
